@@ -4,8 +4,13 @@ import threading
 
 def send_messages(client_socket):
     while True:
-        message = input("Client: ")
-        client_socket.send(message.encode())
+        try:
+            message = input("Client: ")
+            client_socket.send(message.encode())
+        except:
+            print("Connection closed.")
+            client_socket.close()
+            break
 
 def receive_messages(client_socket):
     while True:
@@ -14,7 +19,10 @@ def receive_messages(client_socket):
             if not reply:
                 break
             stdout.write(f"\nServer: {reply}\nClient: ")
+            stdout.flush()
         except:
+            print("Connection Closed.")
+            client_socket.close()
             break
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
