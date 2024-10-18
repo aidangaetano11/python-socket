@@ -6,6 +6,6 @@ server.bind(('0.0.0.0', 9999))
 server.listen(5)
 
 while True:
-    client, addr = server.acccept()
+    client, addr = server.accept()
     print(client.recv(1024).decode())
     client.send("Hello From Server".encode())
