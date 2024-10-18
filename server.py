@@ -1,6 +1,7 @@
 import socket
 from sys import stdout
 import threading
+import os
 
 
 def handle_client(client_socket):
@@ -8,7 +9,21 @@ def handle_client(client_socket):
         while True:
             try:
                 message = input("Server: ")
-                client_socket.send(message.encode())
+                if message.startswith("SEND"):
+                    file_path = message.split(" ", 1)[1]
+                    if os.path.exists(file_path):
+                        file_name = os.path.basename(file_path)
+                        client_socket.send(f"FILE_NAME:{file_name}".encode())
+
+                        with open(file_path,"rb") as file:
+                            while(chunk := file.read(1024)):
+                                client_socket.send(chunk)
+                        client_socket.send(b"END_OF_FILE")
+                        print(f"Sent {file_name} to client.")
+                    else:
+                        print(f"File {file_path} not found.")
+                else:
+                    client_socket.send(message.encode())
             except:
                 break
 
@@ -16,10 +31,17 @@ def handle_client(client_socket):
         while True:
             try:
                 message = client_socket.recv(1024).decode()
-                if not message:
-                    break
-                stdout.write(f"\nClient: {message}\nServer: ")
-                stdout.flush()
+                if message.startswith("FILE:"):
+                    file_name = message.split(":")[1]
+                    with open(f"received_{file_name}", "wb") as file:
+                        while True:
+                            chunk = client_socket.recv(1024)
+                            if chunk == b"END_OF_FILE":
+                                break
+                            file.write(chunk)
+                    print(f"Received file {file_name} from client")
+                else:
+                    print(f"Client: {message}")
             except:
                 break
 
