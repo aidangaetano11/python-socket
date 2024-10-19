@@ -1,2 +1,11 @@
-# python-socket
-Simple Python sockets with message and file transfer between server and client.
+# Client-Server Socket App
+
+### Description
+
+Simple client-server socket application using Python.
+Allows server and client to send messages and files back and forth.
+
+### Credits
+
+Aidan Gaetano 
+
