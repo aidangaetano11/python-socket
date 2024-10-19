@@ -43,7 +43,7 @@ def receive_messages(client_socket):
                 received_size = 0
                 print(f"Receiving file: {file_name}, Size: {file_size} bytes")
 
-                with open(f"client_receive_files/received_{file_name}", "wb") as file:
+                with open(f"client_received_files/received_{file_name}", "wb") as file:
                     while received_size < file_size:
                         chunk = client_socket.recv(min(1024, file_size - received_size))
                         file.write(chunk)
